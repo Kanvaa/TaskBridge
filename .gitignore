@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+.system_generated/
+.idea/
+.vscode/
+instance/
+*.db
+*.log
