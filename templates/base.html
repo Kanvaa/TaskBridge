@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TaskBridge{% endblock %}</title>
+    <!-- Google Fonts Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+    <nav class="navbar" id="navbar">
+        <a href="{{ url_for('tasks.dashboard') }}" class="navbar-brand" id="nav-brand">
+            ⚡ Task<span>Bridge</span>
+        </a>
+        <ul class="navbar-nav" id="nav-list">
+            {% if session.get('user_id') %}
+                <li><span class="navbar-link" style="color: var(--text-primary);">Hello, <strong>{{ session.get('username') }}</strong></span></li>
+                <li><a href="{{ url_for('tasks.dashboard') }}" class="navbar-link" id="nav-dashboard">Dashboard</a></li>
+                <li><a href="{{ url_for('auth.logout') }}" class="btn btn-outline" id="nav-logout">Logout</a></li>
+            {% else %}
+                <li><a href="{{ url_for('auth.login') }}" class="navbar-link" id="nav-login">Login</a></li>
+                <li><a href="{{ url_for('auth.register') }}" class="btn btn-primary" id="nav-register">Sign Up</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <div class="container" id="main-container">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages" id="flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}" id="flash-{{ loop.index }}">
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer id="footer">
+        <p>&copy; 2026 TaskBridge System. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                btn.textContent = '👁️';
+            }
+        }
+    </script>
+</body>
+</html>
