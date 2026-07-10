@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ action }} Task - TaskBridge{% endblock %}
+
+{% block content %}
+<div class="form-container" id="task-form-container">
+    <div class="form-header">
+        <h2>{{ action }} Task</h2>
+    </div>
+    
+    <form action="{% if action == 'Create' %}{{ url_for('tasks.create') }}{% else %}{{ url_for('tasks.edit', task_id=task.id) }}{% endif %}" method="POST" id="task-form">
+        <div class="form-group">
+            <label for="title" class="form-label">Task Title</label>
+            <input type="text" id="title" name="title" class="form-control" placeholder="Enter task title" required value="{% if task %}{{ task.title }}{% endif %}">
+        </div>
+        
+        <div class="form-group">
+            <label for="description" class="form-label">Description</label>
+            <textarea id="description" name="description" class="form-control" rows="4" placeholder="Describe the task details...">{% if task %}{{ task.description }}{% endif %}</textarea>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="status" class="form-label">Status</label>
+                <select name="status" id="status" class="form-control" style="cursor: pointer;">
+                    <option value="Pending" {% if task and task.status == 'Pending' %}selected{% endif %}>Pending</option>
+                    <option value="In Progress" {% if task and task.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                    <option value="Completed" {% if task and task.status == 'Completed' %}selected{% endif %}>Completed</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="priority" class="form-label">Priority</label>
+                <select name="priority" id="priority" class="form-control" style="cursor: pointer;">
+                    <option value="Low" {% if task and task.priority == 'Low' %}selected{% endif %}>Low</option>
+                    <option value="Medium" {% if task and task.priority == 'Medium' or not task %}selected{% endif %}>Medium</option>
+                    <option value="High" {% if task and task.priority == 'High' %}selected{% endif %}>High</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="due_date" class="form-label">Due Date</label>
+            <input type="date" id="due_date" name="due_date" class="form-control" value="{% if task %}{{ task.due_date_str }}{% endif %}">
+        </div>
+        
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn btn-primary" style="flex: 1;" id="task-submit">{{ action }} Task</button>
+            <a href="{{ url_for('tasks.dashboard') }}" class="btn btn-outline" style="flex: 1;" id="task-cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('due_date').setAttribute('min', today);
+    });
+</script>
+{% endblock %}
